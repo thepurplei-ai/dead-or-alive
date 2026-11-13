@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import { useAudioRecorder } from '@siteed/audio-studio';
 import { AudioModule } from 'expo-audio';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { analyzeBounce, pcm16ToFloat32, FIP_MIN_CM, FIP_MAX_CM, THRESHOLDS } from './src/bounceAnalyzer';
 import { T } from './src/strings';
 
 const SAMPLE_RATE = 44100;
+const CALIBRATION_KEY = 'calibration-v1'; // saved on the phone only
 const LISTEN_MS = 4500; // long enough for 4–6 bounces from waist height
 
 // Colour tokens. Change the look of the whole app here.
@@ -40,7 +42,17 @@ export default function App() {
   const [screen, setScreen] = useState('home'); // home | listening | result | error
   const [result, setResult] = useState(null);
   const [mode, setMode] = useState('test');     // test | calibrate
-  const [reference, setReference] = useState(null); // new-ball calibration: { e, sigma }
+  const [reference, setReference] = useState(null); // new-ball calibration: { e, sigma, at }
+
+  // Load the saved calibration when the app opens.
+  useEffect(() => {
+    AsyncStorage.getItem(CALIBRATION_KEY)
+      .then((raw) => {
+        const saved = raw && JSON.parse(raw);
+        if (saved && typeof saved.e === 'number') setReference(saved);
+      })
+      .catch(() => {}); // no saved calibration: the app works without one
+  }, []);
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
   const [heard, setHeard] = useState(null); // what the microphone delivered, shown on errors
@@ -111,7 +123,9 @@ export default function App() {
       return;
     }
     if (nextMode === 'calibrate') {
-      setReference({ e: res.e, sigma: res.eSigma });
+      const cal = { e: res.e, sigma: res.eSigma, at: Date.now() };
+      setReference(cal);
+      AsyncStorage.setItem(CALIBRATION_KEY, JSON.stringify(cal)).catch(() => {});
       setResult({ ...res, calibration: true });
     } else {
       setResult(res);
@@ -133,7 +147,7 @@ export default function App() {
             <Steps />
             <BigButton label={T.home.test} onPress={() => listen('test')} />
             <Chip
-              label={reference ? T.home.recalibrate : T.home.calibrate}
+              label={reference ? T.home.recalibrate(new Date(reference.at || Date.now())) : T.home.calibrate}
               active={!!reference}
               onPress={() => listen('calibrate')}
             />

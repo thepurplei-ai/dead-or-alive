@@ -11,7 +11,8 @@ export const T = {
     ],
     test: 'Test a ball',
     calibrate: 'First time? Calibrate with a NEW ball',
-    recalibrate: 'Calibrated ✓ · Calibrate again',
+    recalibrate: (date) =>
+      `Calibrated ${date.toLocaleDateString([], { day: 'numeric', month: 'short' })} ✓ · Calibrate again`,
     calibratedBadge: 'Calibrated',
     history: 'Recent tests',
   },
