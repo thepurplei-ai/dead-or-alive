@@ -1,5 +1,5 @@
-// All text in one place, so the app is easy to translate (Spanish next).
-export const T = {
+// All text in one place. English (EN) and Spanish (ES); the phone's language picks one.
+const EN = {
   back: 'Back',
   home: {
     kicker: 'Padel ball check',
@@ -50,3 +50,67 @@ export const T = {
     retry: 'Try again',
   },
 };
+
+const ES = {
+  back: 'Volver',
+  home: {
+    kicker: 'Control de pelotas de pádel',
+    title: '¿Tu pelota sigue viva?',
+    steps: [
+      'Ponte sobre un suelo duro: cemento o baldosas, no el césped de la pista.',
+      'Deja el móvil en el suelo, a un paso de distancia.',
+      'Pulsa el botón y suelta la pelota a la altura de la cintura. Déjala botar hasta que pare.',
+    ],
+    test: 'Probar una pelota',
+    calibrate: '¿Primera vez? Calibra con una pelota NUEVA',
+    recalibrate: (date) =>
+      `Calibrado ${date.toLocaleDateString([], { day: 'numeric', month: 'short' })} ✓ · Calibrar de nuevo`,
+    calibratedBadge: 'Calibrado',
+    history: 'Pruebas recientes',
+  },
+  listening: {
+    kicker: 'Micrófono activado',
+    title: 'Escuchando…',
+    test: 'Suelta la pelota ahora y haz silencio unos segundos.',
+    calibrate: 'Suelta ahora una pelota de un bote NUEVO.',
+  },
+  result: {
+    equivalent: (min, max) => `Bote si se suelta desde 2,54 m. Una pelota nueva bota ${min}–${max} cm (norma oficial FIP).`,
+    range: (cm) => `± ${cm} cm`,
+    newBall: 'Pelota nueva',
+    again: 'Probar otra pelota',
+    lowConfidence: 'Los botes se oyeron con algo de ruido. Prueba otra vez para un resultado más seguro.',
+    notCalibrated: 'Consejo: calibra con una pelota nueva en este suelo para una medida más precisa.',
+    calibrated: 'Calibrado',
+    calibratedText: 'Listo. Tus pruebas en este suelo se compararán ahora con una pelota nueva.',
+  },
+  verdict: {
+    alive: { title: 'VIVA', advice: 'Muy buen bote. Sigue jugando con ella.' },
+    tired: { title: 'CANSADA', advice: 'Aún sirve para entrenar, pero es más lenta que una nueva.' },
+    dead: { title: 'MUERTA', advice: 'Demasiado lenta para un buen partido. Toca abrir un bote nuevo.' },
+  },
+  errors: {
+    title: 'Probemos otra vez',
+    permission: 'La app necesita el micrófono para oír los botes. Permítelo en los ajustes del móvil.',
+    mic: 'No se pudo activar el micrófono. Cierra otras apps que lo usen y vuelve a intentarlo.',
+    noImpacts: 'No se oyó ningún bote. Acerca el móvil a donde cae la pelota.',
+    tooFew: 'No hay suficientes botes claros. Suelta la pelota sobre un suelo duro y en silencio.',
+    noSound: 'El micrófono no envió sonido. Comprueba que ninguna otra app lo esté usando y vuelve a intentarlo.',
+    heard: (seconds, loudest, bounces) =>
+      `Oído ${seconds.toFixed(1).replace('.', ',')} s · máximo ${Math.round(loudest * 100)}%` +
+      (bounces != null ? ` · ${bounces} sonidos de bote` : ''),
+    retry: 'Intentar de nuevo',
+  },
+};
+
+/** The phone's language, e.g. "es-ES" → "es". Falls back to English. */
+function phoneLanguage() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().locale.slice(0, 2).toLowerCase();
+  } catch (e) {
+    return 'en';
+  }
+}
+
+export const STRINGS = { en: EN, es: ES };
+export const T = STRINGS[phoneLanguage()] || EN;

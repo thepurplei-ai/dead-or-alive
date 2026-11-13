@@ -11,7 +11,9 @@ Drop a padel ball near your phone. The app listens to the bounces and tells you 
 | `App.js` | The app screens ("Night Court" design: colours are in `C` at the top) |
 | `assets/` | App icon and splash screen |
 | `docs/design-preview.png` | Picture of every screen |
-| `src/strings.js` | All the app's text, in one place for translation |
+| `src/strings.js` | All the app's text, in English and Spanish |
+| `docs/google-play.md` | Store texts (EN/ES), Data safety answers, publishing checklist |
+| `docs/privacy-policy.md` | Privacy policy (EN/ES) |
 | `app.json` | App name, microphone permission text, plugins |
 
 ## How the measurement works

@@ -8,7 +8,7 @@ and keep them short. Never ask the owner to run terminal commands: run them your
 
 - Expo (React Native), JavaScript. Entry: `index.js` → `App.js`.
 - `src/bounceAnalyzer.js`: the measuring engine (pure JS, no dependencies). Tested by `npm test`.
-- `src/strings.js`: all app text. Add Spanish later as a second object.
+- `src/strings.js`: all app text, English (EN) and Spanish (ES). The phone language picks one; add every new text to both.
 - Microphone streaming: `@siteed/audio-studio` (native code, so the app needs a development build, not Expo Go).
   Permissions: `expo-audio` (`AudioModule.requestRecordingPermissionsAsync`).
 - Bundle ID / package: `com.thepurpleiai.deadoralive`.
