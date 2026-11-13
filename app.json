@@ -14,7 +14,12 @@
     },
     "android": {
       "package": "com.thepurpleiai.deadoralive",
-      "permissions": ["android.permission.RECORD_AUDIO"]
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ]
     },
     "plugins": [
       [
@@ -23,7 +28,14 @@
           "microphonePermission": "Dead or Alive listens to the ball bouncing to measure how much pressure it has left. Audio is analysed on your phone and never sent anywhere."
         }
       ],
-      "@siteed/audio-studio"
-    ]
+      "@siteed/audio-studio",
+      "expo-asset"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "e174f22e-26e5-4c0c-a064-52fbf3de070c"
+      }
+    },
+    "owner": "thepurplei_ai"
   }
 }

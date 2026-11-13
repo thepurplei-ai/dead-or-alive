@@ -13,6 +13,12 @@
     "build:android:preview": "npx eas-cli@latest build --profile preview --platform android --non-interactive --no-wait"
   },
   "dependencies": {
-    "expo": "latest"
+    "@siteed/audio-studio": "^3.2.1",
+    "expo": "latest",
+    "expo-asset": "~58.0.21",
+    "expo-audio": "~58.0.12",
+    "expo-dev-client": "~58.0.20",
+    "react": "19.3.0",
+    "react-native": "0.88.1"
   }
 }
