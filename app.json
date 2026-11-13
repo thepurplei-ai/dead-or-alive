@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Dead or Alive",
+    "slug": "dead-or-alive",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "bundleIdentifier": "com.CHANGEME.deadoralive",
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Dead or Alive listens to the ball bouncing to measure how much pressure it has left. Audio is analysed on your phone and never sent anywhere."
+      }
+    },
+    "android": {
+      "package": "com.CHANGEME.deadoralive",
+      "permissions": ["android.permission.RECORD_AUDIO"]
+    },
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Dead or Alive listens to the ball bouncing to measure how much pressure it has left. Audio is analysed on your phone and never sent anywhere."
+        }
+      ],
+      "@siteed/audio-studio"
+    ]
+  }
+}
