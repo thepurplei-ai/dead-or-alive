@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useAudioRecorder } from '@siteed/audio-studio';
 import { AudioModule } from 'expo-audio';
-import { analyzeBounce, FIP_MIN_CM, FIP_MAX_CM, THRESHOLDS } from './src/bounceAnalyzer';
+import { analyzeBounce, pcm16ToFloat32, FIP_MIN_CM, FIP_MAX_CM, THRESHOLDS } from './src/bounceAnalyzer';
 import { T } from './src/strings';
 
 const SAMPLE_RATE = 44100;
@@ -43,10 +43,12 @@ export default function App() {
   const [reference, setReference] = useState(null); // new-ball calibration: { e, sigma }
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
+  const [heard, setHeard] = useState(null); // what the microphone delivered, shown on errors
 
   async function listen(nextMode) {
     setMode(nextMode);
     setError(null);
+    setHeard(null);
     const perm = await AudioModule.requestRecordingPermissionsAsync();
     if (!perm.granted) {
       setError(T.errors.permission);
@@ -59,10 +61,13 @@ export default function App() {
       await startRecording({
         sampleRate: SAMPLE_RATE,
         channels: 1,
-        encoding: 'pcm_32bit',
+        // 16-bit: the library's float32 stream converts from 16-bit samples on Android.
+        encoding: 'pcm_16bit',
+        interval: 100, // deliver audio every 100 ms
         streamFormat: 'float32',
         onAudioStream: async (event) => {
-          if (event && event.data) chunks.current.push(event.data);
+          const samples = event && toFloat32(event.data);
+          if (samples && samples.length) chunks.current.push(samples);
         },
       });
     } catch (e) {
@@ -84,12 +89,23 @@ export default function App() {
     let o = 0;
     for (const c of chunks.current) { samples.set(c, o); o += c.length; }
 
+    let loudest = 0;
+    for (let i = 0; i < samples.length; i++) loudest = Math.max(loudest, Math.abs(samples[i]));
+    const info = { seconds: samples.length / SAMPLE_RATE, loudest };
+    setHeard(info);
+    if (samples.length < SAMPLE_RATE * 0.5 || loudest === 0) {
+      setError(T.errors.noSound);
+      setScreen('error');
+      return;
+    }
+
     const res = analyzeBounce(
       samples,
       SAMPLE_RATE,
       nextMode === 'test' && reference ? { referenceE: reference.e, referenceSigma: reference.sigma } : {},
     );
     if (!res.ok) {
+      setHeard({ ...info, bounces: res.bounces ? res.bounces.length : 0 });
       setError(res.reason === 'no_impacts' ? T.errors.noImpacts : T.errors.tooFew);
       setScreen('error');
       return;
@@ -155,6 +171,7 @@ export default function App() {
             </View>
             <Text style={[s.title, s.textCenter]}>{T.errors.title}</Text>
             <Text style={[s.p, s.textCenter]}>{error}</Text>
+            {heard && <Text style={s.diag}>{T.errors.heard(heard.seconds, heard.loudest, heard.bounces)}</Text>}
             <BigButton label={T.errors.retry} onPress={() => listen(mode)} />
             <TextButton label={T.back} onPress={() => setScreen('home')} />
           </View>
@@ -162,6 +179,22 @@ export default function App() {
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+/** Turns any audio chunk the library may send into Float32 samples in [-1, 1]. */
+function toFloat32(data) {
+  if (!data) return null;
+  if (data instanceof Float32Array) return data;
+  if (data instanceof Int16Array) return Float32Array.from(data, (v) => v / 32768);
+  if (Array.isArray(data)) return Float32Array.from(data);
+  if (typeof data === 'string') {
+    // base64-encoded 16-bit PCM
+    const bin = global.atob(data);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return pcm16ToFloat32(bytes);
+  }
+  return null;
 }
 
 function Header({ calibrated }) {
@@ -406,6 +439,7 @@ const s = StyleSheet.create({
 
   advice: { color: C.text, fontSize: 18, fontWeight: '700', lineHeight: 25, marginTop: 4 },
   note: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
+  diag: { color: C.muted, fontSize: 12, textAlign: 'center', opacity: 0.8, fontVariant: ['tabular-nums'] },
   noteText: { color: C.muted, fontSize: 14, lineHeight: 20, flex: 1 },
 
   histRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },

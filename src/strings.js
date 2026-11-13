@@ -42,6 +42,10 @@ export const T = {
     mic: 'The microphone could not start. Close other apps that use it and try again.',
     noImpacts: 'No bounces heard. Put the phone closer to where the ball lands.',
     tooFew: 'Not enough clear bounces. Drop the ball on a hard floor and keep things quiet.',
+    noSound: 'The microphone sent no sound. Check that no other app is using it, then try again.',
+    heard: (seconds, loudest, bounces) =>
+      `Heard ${seconds.toFixed(1)} s · loudest ${Math.round(loudest * 100)}%` +
+      (bounces != null ? ` · ${bounces} bounce sounds` : ''),
     retry: 'Try again',
   },
 };
