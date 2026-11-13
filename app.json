@@ -6,14 +6,14 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "ios": {
-      "bundleIdentifier": "com.CHANGEME.deadoralive",
+      "bundleIdentifier": "com.thepurpleiai.deadoralive",
       "supportsTablet": false,
       "infoPlist": {
         "NSMicrophoneUsageDescription": "Dead or Alive listens to the ball bouncing to measure how much pressure it has left. Audio is analysed on your phone and never sent anywhere."
       }
     },
     "android": {
-      "package": "com.CHANGEME.deadoralive",
+      "package": "com.thepurpleiai.deadoralive",
       "permissions": ["android.permission.RECORD_AUDIO"]
     },
     "plugins": [

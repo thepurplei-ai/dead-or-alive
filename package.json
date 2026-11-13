@@ -1,0 +1,18 @@
+{
+  "name": "dead-or-alive",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "test": "node test/simulate.test.js",
+    "build:android:dev": "npx eas-cli@latest build --profile development --platform android --non-interactive --no-wait",
+    "build:ios:dev": "npx eas-cli@latest build --profile development --platform ios --non-interactive --no-wait",
+    "build:android:preview": "npx eas-cli@latest build --profile preview --platform android --non-interactive --no-wait"
+  },
+  "dependencies": {
+    "expo": "latest"
+  }
+}
