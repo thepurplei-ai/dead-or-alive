@@ -8,7 +8,9 @@ Drop a padel ball near your phone. The app listens to the bounces and tells you 
 | --- | --- |
 | `src/bounceAnalyzer.js` | The brain: finds the bounces in the microphone sound and calculates the ball's bounce. Tested. |
 | `test/simulate.test.js` | Tests with simulated bounce recordings. Run `node test/simulate.test.js` |
-| `App.js` | The app screens: instructions, listening, result, calibration, recent tests |
+| `App.js` | The app screens ("Night Court" design: colours are in `C` at the top) |
+| `assets/` | App icon and splash screen |
+| `docs/design-preview.png` | Picture of every screen |
 | `src/strings.js` | All the app's text, in one place for translation |
 | `app.json` | App name, microphone permission text, plugins |
 

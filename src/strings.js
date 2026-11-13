@@ -2,6 +2,7 @@
 export const T = {
   back: 'Back',
   home: {
+    kicker: 'Padel ball check',
     title: 'Is your ball still alive?',
     steps: [
       'Stand on a hard floor: concrete or tiles, not the court turf.',
@@ -9,11 +10,13 @@ export const T = {
       'Tap the button, then drop the ball from waist height. Let it bounce until it stops.',
     ],
     test: 'Test a ball',
-    calibrate: 'First time here? Calibrate with a NEW ball for best accuracy',
-    recalibrate: 'Calibrated ✓  Tap to calibrate again',
+    calibrate: 'First time? Calibrate with a NEW ball',
+    recalibrate: 'Calibrated ✓ · Calibrate again',
+    calibratedBadge: 'Calibrated',
     history: 'Recent tests',
   },
   listening: {
+    kicker: 'Microphone on',
     title: 'Listening…',
     test: 'Drop the ball now and stay quiet for a few seconds.',
     calibrate: 'Drop a ball from a NEW can now.',
@@ -21,6 +24,7 @@ export const T = {
   result: {
     equivalent: (min, max) => `Bounce if dropped from 2.54 m. A new ball bounces ${min}–${max} cm (official FIP rule).`,
     range: (cm) => `± ${cm} cm`,
+    newBall: 'New ball',
     again: 'Test another ball',
     lowConfidence: 'The bounces were a bit noisy. Test again for a surer result.',
     notCalibrated: 'Tip: calibrate with a new ball on this floor for a more accurate reading.',

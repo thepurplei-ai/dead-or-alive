@@ -19,7 +19,11 @@
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
-      ]
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#07090C"
+      }
     },
     "plugins": [
       [
@@ -29,13 +33,24 @@
         }
       ],
       "@siteed/audio-studio",
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#07090C"
+        }
+      ]
     ],
     "extra": {
       "eas": {
         "projectId": "e174f22e-26e5-4c0c-a064-52fbf3de070c"
       }
     },
-    "owner": "thepurplei_ai"
+    "owner": "thepurplei_ai",
+    "icon": "./assets/icon.png",
+    "backgroundColor": "#07090C"
   }
 }
