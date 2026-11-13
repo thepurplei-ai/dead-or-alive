@@ -29,7 +29,7 @@ export default function App() {
   const [screen, setScreen] = useState('home'); // home | listening | result | error
   const [result, setResult] = useState(null);
   const [mode, setMode] = useState('test');     // test | calibrate
-  const [referenceE, setReferenceE] = useState(null);
+  const [reference, setReference] = useState(null); // new-ball calibration: { e, sigma }
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
 
@@ -73,14 +73,18 @@ export default function App() {
     let o = 0;
     for (const c of chunks.current) { samples.set(c, o); o += c.length; }
 
-    const res = analyzeBounce(samples, SAMPLE_RATE, nextMode === 'test' && referenceE ? { referenceE } : {});
+    const res = analyzeBounce(
+      samples,
+      SAMPLE_RATE,
+      nextMode === 'test' && reference ? { referenceE: reference.e, referenceSigma: reference.sigma } : {},
+    );
     if (!res.ok) {
       setError(res.reason === 'no_impacts' ? T.errors.noImpacts : T.errors.tooFew);
       setScreen('error');
       return;
     }
     if (nextMode === 'calibrate') {
-      setReferenceE(res.e);
+      setReference({ e: res.e, sigma: res.eSigma });
       setResult({ ...res, calibration: true });
     } else {
       setResult(res);
@@ -102,7 +106,7 @@ export default function App() {
             <Big label={T.home.test} onPress={() => listen('test')} />
             <Pressable onPress={() => listen('calibrate')} style={s.link}>
               <Text style={s.linkText}>
-                {referenceE ? T.home.recalibrate : T.home.calibrate}
+                {reference ? T.home.recalibrate : T.home.calibrate}
               </Text>
             </Pressable>
             {history.length > 0 && <History items={history} />}
@@ -126,7 +130,7 @@ export default function App() {
               <Back onPress={() => setScreen('home')} />
             </View>
           ) : (
-            <Verdict result={result} calibrated={!!referenceE} onAgain={() => listen('test')} onHome={() => setScreen('home')} />
+            <Verdict result={result} calibrated={!!reference} onAgain={() => listen('test')} onHome={() => setScreen('home')} />
           )
         )}
 
@@ -165,6 +169,7 @@ function Verdict({ result, calibrated, onAgain, onHome }) {
         <Text style={[s.badgeText, { color }]}>{v.title}</Text>
       </View>
       <Text style={s.cm}>{Math.round(result.equivalentCm)} cm</Text>
+      <Text style={s.range}>{T.result.range(Math.max(1, Math.round(result.uncertaintyCm)))}</Text>
       <Text style={s.p}>{T.result.equivalent(FIP_MIN_CM, FIP_MAX_CM)}</Text>
       <Text style={[s.p, { color: COLORS.text }]}>{v.advice}</Text>
       {result.confidence !== 'high' && <Text style={s.note}>{T.result.lowConfidence}</Text>}
@@ -224,6 +229,7 @@ const s = StyleSheet.create({
   badge: { borderWidth: 4, borderRadius: 999, paddingVertical: 14, paddingHorizontal: 36, marginTop: 12 },
   badgeText: { fontSize: 36, fontWeight: '900', letterSpacing: 2 },
   cm: { color: COLORS.text, fontSize: 56, fontWeight: '900' },
+  range: { color: COLORS.muted, fontSize: 20, fontWeight: '700', marginTop: -12 },
   histRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   dot: { fontSize: 16 },
   histText: { color: COLORS.text, fontSize: 15, flex: 1 },

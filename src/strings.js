@@ -20,6 +20,7 @@ export const T = {
   },
   result: {
     equivalent: (min, max) => `Bounce if dropped from 2.54 m. A new ball bounces ${min}–${max} cm (official FIP rule).`,
+    range: (cm) => `± ${cm} cm`,
     again: 'Test another ball',
     lowConfidence: 'The bounces were a bit noisy. Test again for a surer result.',
     notCalibrated: 'Tip: calibrate with a new ball on this floor for a more accurate reading.',

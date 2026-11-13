@@ -15,11 +15,20 @@ Drop a padel ball near your phone. The app listens to the bounces and tells you 
 ## How the measurement works
 
 Between two bounces the ball flies freely, so the time between bounces shows how fast it left the floor.
-Each bounce keeps a fraction **e** of the speed, and **e = (time between bounces 2 and 3) ÷ (time between bounces 1 and 2)**.
-That ratio does not depend on how high you drop the ball, so the app needs nothing but the microphone.
+Each bounce keeps a fraction **e** of the speed (e = take-off speed ÷ landing speed).
+That does not depend on how high you drop the ball, so the app needs nothing but the microphone.
+
+To make the reading accurate, the app:
+
+1. **Includes air drag.** Drag slows the ball in flight. From a 2.54 m drop it takes about 10 cm off the bounce.
+2. **Removes contact time.** The ball spends about 4 ms squashed on the floor before it leaves.
+3. **Uses every bounce.** Each bounce gives its own e. A weighted fit combines them all and throws out a bounce that clearly disagrees (a stray tap, a shoe).
+4. **Corrects for speed.** A ball bounces a little less when it hits harder. The fit measures that from your bounces and reads the ball at the speed of the official 2.54 m test, even though you drop it from waist height.
+5. **Gives a ± range** (e.g. 138 cm ± 3). A wide range means "test again".
+6. **Filters the sound** to the ball's "pock" (about 1.5–5 kHz), so it hears quiet late bounces through hiss and voices.
 
 FIP rule: a legal ball dropped from 2.54 m on a hard surface bounces 135–145 cm.
-The app converts **e** into "bounce from 2.54 m" = 254 cm × e².
+The app converts **e** into "bounce from 2.54 m", with air drag included.
 
 | Result | Bounce from 2.54 m |
 | --- | --- |
