@@ -52,3 +52,8 @@ App Store Connect API key. Register the owner's iPhone with `npx eas-cli@latest 
   without new test data from real balls.
 - The app must keep working fully offline. Audio never leaves the phone.
 - Keep the UI simple: one big button, one big result.
+
+## Second app: SafePair
+
+`safety-app/` is a separate app (live location sharing + SOS for two people).
+It has its own `package.json` and `CLAUDE.md`; read `safety-app/CLAUDE.md` before working on it.

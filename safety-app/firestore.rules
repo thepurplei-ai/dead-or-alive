@@ -1,0 +1,52 @@
+rules_version = '2';
+// Security rules for SafePair. Paste these in Firebase console → Firestore Database → Rules → Publish.
+// Only the two connected people can read or write their pair, locations and messages.
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signedIn() { return request.auth != null; }
+    function me() { return request.auth.uid; }
+
+    // Pairing codes: the owner writes it; anyone signed in who knows the exact code can read it once.
+    // No listing, so codes cannot be discovered.
+    match /codes/{code} {
+      allow get: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == me()
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'createdAt']);
+      // Re-using a code is allowed only after it expired (15 minutes).
+      allow update: if signedIn() && request.resource.data.uid == me()
+        && request.time.toMillis() - resource.data.createdAt > 15 * 60 * 1000;
+      allow delete: if signedIn();
+    }
+
+    match /pairs/{pairId} {
+      function members() { return get(/databases/$(db)/documents/pairs/$(pairId)).data.members; }
+      function isMember() { return signedIn() && me() in resource.data.members; }
+
+      allow read, delete: if isMember();
+      // Create: I must be in it, the other person must own the code I typed, and the id must match.
+      allow create: if signedIn()
+        && request.resource.data.members.size() == 2
+        && me() in request.resource.data.members
+        && pairId == request.resource.data.members[0] + '_' + request.resource.data.members[1]
+        && get(/databases/$(db)/documents/codes/$(request.resource.data.code)).data.uid
+             in request.resource.data.members
+        && get(/databases/$(db)/documents/codes/$(request.resource.data.code)).data.uid != me();
+      // Update: members can change names, push tokens and SOS, never who is in the pair.
+      allow update: if isMember()
+        && request.resource.data.members == resource.data.members
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['names', 'tokens', 'sos']);
+
+      match /locations/{uid} {
+        allow read: if signedIn() && me() in members();
+        allow write: if signedIn() && uid == me() && me() in members();
+      }
+
+      match /messages/{msgId} {
+        allow read: if signedIn() && me() in members();
+        allow create: if signedIn() && me() in members()
+          && request.resource.data.from == me()
+          && request.resource.data.text is string && request.resource.data.text.size() <= 500;
+      }
+    }
+  }
+}
