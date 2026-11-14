@@ -1,0 +1,57 @@
+{
+  "expo": {
+    "name": "WonderReel",
+    "slug": "wonderreel",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/brand/icon.png",
+    "scheme": "wonderreel",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0b0d17",
+    "ios": {
+      "bundleIdentifier": "com.thepurpleiai.wonderreel",
+      "supportsTablet": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.thepurpleiai.wonderreel",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0b0d17",
+        "foregroundImage": "./assets/brand/adaptive-icon.png",
+        "monochromeImage": "./assets/brand/monochrome-icon.png"
+      },
+      "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"],
+      "blockedPermissions": [
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/brand/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      ["expo-splash-screen", { "backgroundColor": "#0b0d17", "image": "./assets/brand/splash-icon.png", "imageWidth": 120 }],
+      ["expo-image-picker", {
+        "photosPermission": "WonderReel lets you choose a photo or video from your library for your movie.",
+        "cameraPermission": "WonderReel uses the camera so you can take a photo or video for your own AI movie.",
+        "microphonePermission": "WonderReel records sound only when you film a video for your movie."
+      }],
+      ["expo-media-library", {
+        "photosPermission": "WonderReel lets you choose a photo or video from your library for your movie.",
+        "savePhotosPermission": "WonderReel saves movies you export to your photo library.",
+        "isAccessMediaLocationEnabled": false
+      }],
+      "expo-video",
+      "expo-secure-store",
+      "expo-sharing",
+      "expo-localization"
+    ],
+    "experiments": { "typedRoutes": false, "reactCompiler": true }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "WonderReel — AI Movie Studio",
+  "short_name": "WonderReel",
+  "description": "Explore and remix cinematic AI movie concepts. Early prototype; cloud generation is not enabled.",
+  "id": "/",
+  "start_url": "/?source=android-install",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b0d17",
+  "theme_color": "#0b0d17",
+  "icons": [
+    {"src":"/assets/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"/assets/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
