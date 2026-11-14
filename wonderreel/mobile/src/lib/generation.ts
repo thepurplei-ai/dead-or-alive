@@ -42,6 +42,10 @@ export async function startJob(project: Project, kind: GenerationKind, sceneNumb
     remixTemplateId: project.remixOf?.templateId,
   });
   update((p) => ({ ...p, remoteId }));
+  const origin = project.remixOf?.postId;
+  if (origin && /^[0-9a-f-]{36}$/i.test(origin) && !project.remoteId) {
+    await api.linkRemix(remoteId, origin); // keeps attribution + lineage for real posts
+  }
 
   // 2. Upload the user's own source media only when this kind needs it.
   let sourceMediaId: string | undefined;

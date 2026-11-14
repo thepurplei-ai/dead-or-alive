@@ -1,0 +1,17 @@
+# Supabase CLI project config (used by `supabase start` / `supabase functions deploy`).
+project_id = "wonderreel"
+
+[api]
+schemas = ["public"]
+extra_search_path = ["public"]
+
+[auth]
+site_url = "wonderreel://"
+additional_redirect_urls = ["wonderreel://reset", "wonderreel://"]
+enable_signup = true
+
+[auth.email]
+enable_confirmations = true
+
+[functions.jobs-worker]
+verify_jwt = false   # protected by the x-worker-secret header instead

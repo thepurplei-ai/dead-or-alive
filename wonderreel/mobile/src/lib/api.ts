@@ -150,6 +150,12 @@ export async function upsertCloudProject(p: {
   return data!.id as string;
 }
 
+/** Record that a cloud project remixes a public post (server re-checks permission). */
+export async function linkRemix(projectId: string, postId: string) {
+  const { error } = await client().rpc('start_remix', { p_project_id: projectId, p_post_id: postId });
+  rpcError(error);
+}
+
 export async function deleteCloudProject(remoteId: string) {
   const { error } = await client().from('projects').delete().eq('id', remoteId);
   rpcError(error);
@@ -255,14 +261,14 @@ export function addComment(postId: string, body: string) {
 // ---------- Account ----------
 
 export async function getMyProfile() {
-  const uid = await userId();
-  const { data, error } = await client()
-    .from('profiles')
-    .select('id, handle, display_name, bio, adult_status, role, created_at')
-    .eq('id', uid)
-    .maybeSingle();
+  await userId();
+  // Private columns (role, adult status) are only readable through this RPC.
+  const { data, error } = await client().rpc('my_profile');
   rpcError(error);
-  return data;
+  const row = (Array.isArray(data) ? data[0] : data) as {
+    id: string; handle: string | null; display_name: string; bio: string; adult_status: string; role: string; created_at: string;
+  } | undefined;
+  return row ?? null;
 }
 export async function updateMyProfile(p: { handle: string; display_name: string; bio: string }) {
   const uid = await userId();
@@ -301,15 +307,14 @@ export function exportMyData() {
 // ---------- Moderation (server checks the moderator role) ----------
 
 export async function moderationQueue() {
-  const { data, error } = await client().rpc('admin_queue');
-  rpcError(error);
-  return (data ?? []) as {
+  // The moderate Edge Function checks the moderator role and signs private previews.
+  const r = await fn<{ items: {
     kind: 'post' | 'comment' | 'report'; id: string; title: string; body: string; handle: string; created_at: string; preview_url: string | null;
-  }[];
+  }[] }>('moderate', { action: 'queue' });
+  return r.items;
 }
 export async function moderationDecide(kind: 'post' | 'comment' | 'report', id: string, decision: 'approve' | 'reject' | 'takedown' | 'dismiss', note: string) {
-  const { error } = await client().rpc('admin_decide', { p_kind: kind, p_id: id, p_decision: decision, p_note: note });
-  rpcError(error);
+  await fn('moderate', { action: 'decide', kind, id, decision, note });
 }
 export async function getFlags() {
   const { data, error } = await client().from('feature_flags').select('key, enabled');
