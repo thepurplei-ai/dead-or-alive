@@ -29,5 +29,8 @@ Use `EXPO_OFFLINE=1` with `npx expo install` / `npx expo export` when api.expo.d
 - Public posts are created only by `request_publish()` and go live only after moderator approval.
 - Create My Version passes story data only (`toRemixTemplate`, `sanitize_template`) — never media, faces or voices.
 - Family Mode stays on-device; `family_cloud_enabled` is locked off in SQL. Do not unlock it.
-- Model IDs come from env vars; check current provider docs before setting them.
+- AI: Claude (`supabase/functions/_shared/claude.ts`, `@anthropic-ai/sdk`, default `claude-opus-5-5`) is the AI Director
+  and safety checker. Runway (`providers.ts`) makes all images and videos. No OpenAI.
+- Runway model IDs come from env vars; check Runway's docs before setting them.
+- Edge Functions use `supabase/functions/deno.json` as import map; `supabase/package.json` gives Node tests the same packages.
 - Never invent an APK link: only share a URL that EAS returned for a finished build.

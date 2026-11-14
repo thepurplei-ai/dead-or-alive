@@ -11,7 +11,7 @@ Legend: **A** = built and tested · **B** = built, needs credentials/real-servic
 | Android JS bundle (`npx expo export --platform android`) | builds (5.4 MB Hermes bytecode) |
 | Click-through of all main screens (web render, phone size) | no runtime errors; screenshots in `docs/screenshots/` |
 | Database security tests on real Postgres 16 | 15 passed |
-| Provider adapter + job worker tests (mocked HTTP) | 10 passed |
+| Claude + Runway adapter and job worker tests (mocked HTTP) | 11 passed |
 | Edge Functions typecheck (`deno check`) | 12/12 pass |
 | **Native APK / AAB** | **not built yet** — blocked: no `EXPO_TOKEN`, api.expo.dev blocked in this session |
 
@@ -25,9 +25,10 @@ Legend: **A** = built and tested · **B** = built, needs credentials/real-servic
 | Create My Version (story data only, opt-out, blocked creators) | A | Server lineage via `start_remix` + `request_publish` tested in SQL |
 | Discover: search, categories, templates, creators | A | Uses built-in templates until real posts exist |
 | Create: camera/gallery with permission handling, prompt chips, styles, aspect | A* | *Needs a physical-device check for camera |
-| AI Director storyboard + chat edits | A (on-device) / B (cloud OpenAI) | |
+| AI Director storyboard + chat edits | A (on-device) / B (cloud: Claude Opus 5.5) | Structured JSON output, refusal fallback on |
 | Private Studio, persists across restarts, search/filter, rename/duplicate/delete/export | A | |
-| AI image (text-to-image, photo edit) | B | OpenAI adapter + worker tested with mocks |
+| AI image (text-to-image, photo edit) | B | Runway images; Claude checks every result; tested with mocks |
+| Safety checks (prompts, photos, outputs, comments) | B | Claude, structured verdict; a refusal counts as blocked |
 | AI video (image-to-video, video-to-video), durable jobs, resume after restart, cancel | B | Runway adapter + worker tested with mocks |
 | Credits ledger: reserve, idempotent retry, refund on failure | A (SQL) | |
 | Accounts (Supabase email auth, reset password, secure session storage) | B | |
@@ -46,5 +47,5 @@ lawyer-reviewed Terms/Privacy (COPPA, GDPR, DSA), provider terms review, Play Co
 ## Next steps
 1. Build the APK in a session that has `EXPO_TOKEN` (see SETUP.md §1).
 2. Connect Supabase and deploy migrations/functions (SETUP.md §2), then test sign-up on the phone.
-3. Add OpenAI/Runway keys with spend limits and run one real image and one real video job.
+3. Add Claude (Anthropic) and Runway keys with spend limits and run one real image and one real video job.
 4. Google Play Billing with server verification; push notifications.

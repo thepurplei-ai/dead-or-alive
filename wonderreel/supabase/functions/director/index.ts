@@ -1,5 +1,5 @@
 // AI Director: plans or edits a 4-scene storyboard. Never used for Family Mode.
-import { body, flag, handler, HttpError, json, openaiFromEnv, requireEligible, requireUser } from '../_shared/http.ts';
+import { body, flag, handler, HttpError, json, claudeFromEnv, requireEligible, requireUser } from '../_shared/http.ts';
 import { checkPrompt, oneOf, STYLES } from '../_shared/rules.ts';
 
 Deno.serve(handler(async (req) => {
@@ -8,8 +8,8 @@ Deno.serve(handler(async (req) => {
   const b = await body(req);
   if (b.family) throw new HttpError(403, 'Cloud AI is turned off for Family Mode.');
   if (!(await flag(sb, 'generation_enabled'))) throw new HttpError(503, 'AI is paused right now.');
-  const ai = openaiFromEnv();
-  if (!ai) throw new HttpError(503, 'The AI Director is not connected yet.');
+  const ai = claudeFromEnv();
+  if (!ai) throw new HttpError(503, 'The AI Director (Claude) is not connected yet.');
   const prompt = checkPrompt(b.prompt);
   const style = oneOf(b.style, STYLES, 'Cinematic');
   const message = b.message ? String(b.message).slice(0, 500) : undefined;

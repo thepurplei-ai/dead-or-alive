@@ -1,5 +1,5 @@
 // Checks an uploaded file really is what it claims, scans images, then marks it ready.
-import { body, handler, HttpError, json, openaiFromEnv, requireUser } from '../_shared/http.ts';
+import { body, handler, HttpError, json, claudeFromEnv, requireUser } from '../_shared/http.ts';
 import { sniffMime } from '../_shared/providers.ts';
 import { UPLOAD } from '../_shared/rules.ts';
 
@@ -28,8 +28,8 @@ Deno.serve(handler(async (req) => {
   if (total > UPLOAD[m.kind as 'image' | 'video'].maxBytes) await reject('That file is too large.');
 
   if (m.kind === 'image') {
-    const ai = openaiFromEnv();
-    if (!ai) throw new HttpError(503, 'Safety checks are not connected yet, so uploads are paused.');
+    const ai = claudeFromEnv();
+    if (!ai) throw new HttpError(503, 'Safety checks (Claude) are not connected yet, so uploads are paused.');
     const flagged = await ai.moderate('User source image for an AI movie', signed.signedUrl);
     if (flagged.length) await reject('This photo cannot be used on WonderReel.');
   }

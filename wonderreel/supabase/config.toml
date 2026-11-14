@@ -14,4 +14,38 @@ enable_signup = true
 enable_confirmations = true
 
 [functions.jobs-worker]
-verify_jwt = false   # protected by the x-worker-secret header instead
+verify_jwt = false
+import_map = "./functions/deno.json"   # protected by the x-worker-secret header instead
+
+[functions.director]
+import_map = "./functions/deno.json"
+
+[functions.media-upload]
+import_map = "./functions/deno.json"
+
+[functions.media-finalize]
+import_map = "./functions/deno.json"
+
+[functions.media-url]
+import_map = "./functions/deno.json"
+
+[functions.generate]
+import_map = "./functions/deno.json"
+
+[functions.generate-cancel]
+import_map = "./functions/deno.json"
+
+[functions.comment]
+import_map = "./functions/deno.json"
+
+[functions.moderate]
+import_map = "./functions/deno.json"
+
+[functions.delete-account]
+import_map = "./functions/deno.json"
+
+[functions.export-data]
+import_map = "./functions/deno.json"
+
+[functions.verify-purchase]
+import_map = "./functions/deno.json"

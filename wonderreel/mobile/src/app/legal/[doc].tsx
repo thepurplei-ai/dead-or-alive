@@ -26,7 +26,7 @@ const DOCS: Record<string, { title: string; version: string; body: string[] }> =
     body: [
       'What we collect: your email, handle, profile text, the result of the age check (not your birth date), your projects, and the media you choose to upload for rendering.',
       'Your Studio is private. Files are stored in private storage that only you can reach. Public copies are made only after a moderator approves a post you asked to publish.',
-      'AI processing: when you press Render, your prompt and chosen media are sent to our AI providers (for example OpenAI and Runway) to make your result. We do not use your media to train models, and we do not sell your data.',
+      'AI processing: when you press Render, your prompt and chosen media are sent to our AI providers to make your result: Anthropic’s Claude plans your story and checks it for safety, and Runway makes the images and videos. We do not use your media to train models, and we do not sell your data.',
       'Family Mode is stored on your phone only. Children’s photos and videos are never sent to cloud AI services.',
       'You can export your data and delete your account at any time in Settings. Deletion removes your projects, uploads, posts, comments and likes.',
       'No advertising tracking, no location tracking, and no direct messages.',

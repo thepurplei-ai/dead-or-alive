@@ -1,0 +1,10 @@
+{
+  "name": "wonderreel-supabase",
+  "private": true,
+  "type": "module",
+  "description": "Node-side dev dependencies so the Edge Function code can be unit-tested. Deno uses functions/deno.json.",
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
+    "zod": "^4.6.7"
+  }
+}

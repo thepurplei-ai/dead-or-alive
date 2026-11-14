@@ -1,6 +1,6 @@
 // Background worker: leases due jobs, talks to providers, stores outputs privately.
 // Triggered by pg_cron every minute (see supabase/cron.sql) and after each new job.
-import { HttpError, json, openaiFromEnv, runwayFromEnv, service, workerSecret } from '../_shared/http.ts';
+import { HttpError, json, claudeFromEnv, runwayFromEnv, service, workerSecret } from '../_shared/http.ts';
 import { processJob, type Job } from '../_shared/worker.ts';
 import { extFor } from '../_shared/rules.ts';
 
@@ -8,8 +8,8 @@ Deno.serve(async (req) => {
   const secret = workerSecret();
   if (!secret || req.headers.get('x-worker-secret') !== secret) return json(401, { error: 'unauthorized' });
   const sb = service();
-  const ai = openaiFromEnv();
-  const video = runwayFromEnv();
+  const ai = claudeFromEnv();
+  const renderer = runwayFromEnv();
   const { data: jobs, error } = await sb.rpc('service_claim_jobs', { p_limit: 5, p_lease_seconds: 120 });
   if (error) return json(500, { error: error.message });
 
@@ -42,11 +42,7 @@ Deno.serve(async (req) => {
         const { data: s } = await sb.storage.from('private-media').createSignedUrl(path, 600);
         return { mediaId: m.id, signedUrl: s!.signedUrl };
       },
-      image: async (i) => {
-        if (!ai) throw new HttpError(503, 'Image provider not configured');
-        return ai.image(i);
-      },
-      video,
+      renderer,
       moderateImage: async (url) => (ai ? ai.moderate('AI generated output image', url) : ['moderation_unavailable']),
     }).catch(() => 'error');
   }

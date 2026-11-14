@@ -1,5 +1,5 @@
 // Adds a comment as the user (RLS + rate limits apply), then auto-moderates it.
-import { asUser, body, handler, HttpError, json, openaiFromEnv, requireUser } from '../_shared/http.ts';
+import { asUser, body, handler, HttpError, json, claudeFromEnv, requireUser } from '../_shared/http.ts';
 
 Deno.serve(handler(async (req) => {
   const { userId, sb } = await requireUser(req);
@@ -11,7 +11,7 @@ Deno.serve(handler(async (req) => {
     .insert({ post_id: String(b.postId ?? ''), author_id: userId, body: text }).select('id').single();
   if (error) throw new HttpError(400, error.message);
 
-  const ai = openaiFromEnv();
+  const ai = claudeFromEnv();
   let status: 'approved' | 'pending' | 'rejected' = 'pending'; // no automatic check → human review
   if (ai) {
     const flagged = await ai.moderate(text).catch(() => null);

@@ -26,8 +26,10 @@ Everything below is done once. Never paste secret keys into a chat: use the sett
 
 ## 3. AI providers (paid — only when you decide to spend)
 Set as Supabase secrets (`supabase/functions/.env.example` lists them):
-- OpenAI: `OPENAI_API_KEY`, `OPENAI_DIRECTOR_MODEL`, `OPENAI_IMAGE_MODEL` (current model IDs from OpenAI docs).
-- Runway: `RUNWAYML_API_SECRET`, `RUNWAY_IMAGE_TO_VIDEO_MODEL`, `RUNWAY_VIDEO_TO_VIDEO_MODEL`.
+- **Claude** (console.anthropic.com → API keys): `ANTHROPIC_API_KEY`. Claude is the AI Director and checks
+  prompts, photos, results and comments for safety. Model: `claude-opus-5-5` (change with `CLAUDE_MODEL`).
+- **Runway** (makes the pictures and videos — Claude cannot draw): `RUNWAYML_API_SECRET`, `RUNWAY_IMAGE_MODEL`,
+  `RUNWAY_IMAGE_TO_VIDEO_MODEL`, `RUNWAY_VIDEO_TO_VIDEO_MODEL` (current model IDs from Runway's docs).
 - `WORKER_SECRET`: any long random string (also put it in `cron.sql`).
 Set spending limits in both provider dashboards first.
 

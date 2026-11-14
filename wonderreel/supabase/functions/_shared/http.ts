@@ -1,6 +1,7 @@
 // Deno-only helpers for Edge Functions.
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2';
-import { openai, runway } from './providers.ts';
+import { claude } from './claude.ts';
+import { runway } from './providers.ts';
 import { HttpError } from './rules.ts';
 
 export { HttpError };
@@ -45,15 +46,11 @@ export async function flag(sb: SupabaseClient, key: string): Promise<boolean> {
   return !!data?.enabled;
 }
 
-export function openaiFromEnv() {
-  const apiKey = env('OPENAI_API_KEY');
+/** Claude: AI Director + safety checks. Null when ANTHROPIC_API_KEY is not set. */
+export function claudeFromEnv() {
+  const apiKey = env('ANTHROPIC_API_KEY');
   if (!apiKey) return null;
-  return openai({
-    apiKey,
-    directorModel: env('OPENAI_DIRECTOR_MODEL') || undefined,
-    imageModel: env('OPENAI_IMAGE_MODEL') || undefined,
-    moderationModel: env('OPENAI_MODERATION_MODEL') || undefined,
-  });
+  return claude({ apiKey, model: env('CLAUDE_MODEL') || undefined });
 }
 
 export function runwayFromEnv() {
@@ -61,6 +58,7 @@ export function runwayFromEnv() {
   if (!apiKey) return null;
   return runway({
     apiKey,
+    imageModel: env('RUNWAY_IMAGE_MODEL') || undefined,
     imageToVideoModel: env('RUNWAY_IMAGE_TO_VIDEO_MODEL') || undefined,
     videoToVideoModel: env('RUNWAY_VIDEO_TO_VIDEO_MODEL') || undefined,
     apiVersion: env('RUNWAY_API_VERSION') || undefined,
