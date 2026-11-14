@@ -4,7 +4,7 @@
     "slug": "dead-or-alive",
     "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "light",
     "ios": {
       "bundleIdentifier": "com.thepurpleiai.deadoralive",
       "supportsTablet": false,
@@ -22,7 +22,7 @@
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#07090C"
+        "backgroundColor": "#1D4FA0"
       }
     },
     "plugins": [
@@ -40,7 +40,7 @@
           "image": "./assets/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#07090C"
+          "backgroundColor": "#1D4FA0"
         }
       ]
     ],
@@ -51,6 +51,6 @@
     },
     "owner": "thepurplei_ai",
     "icon": "./assets/icon.png",
-    "backgroundColor": "#07090C"
+    "backgroundColor": "#F4F6FA"
   }
 }
